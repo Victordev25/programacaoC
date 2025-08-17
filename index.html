@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#00f0ff" />
+    <title>NEO Bistrô — Sabores do Amanhã</title>
+    <meta name="description" content="NEO Bistrô: um restaurante futurista com um menu interativo e visual neon cativante." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="bg-grid"></div>
+    <div id="bg-glow"></div>
+
+    <header class="nav">
+      <div class="nav__logo" aria-label="NEO Bistrô">
+        <span class="logo__emblem">◎</span>
+        <span class="logo__text">NEO Bistrô</span>
+      </div>
+      <nav class="nav__links" aria-label="Navegação principal">
+        <a href="#menu">Menu</a>
+        <a href="#about">Sobre</a>
+        <a href="#booking">Reservas</a>
+        <a href="#contact">Contato</a>
+      </nav>
+      <div class="nav__actions">
+        <button id="reserveTop" class="btn btn--primary">Reservar</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="hero" class="hero" aria-label="Destaque">
+        <div class="hero__content">
+          <h1 class="hero__title" data-glitch="Sabores do Amanhã">Sabores do Amanhã</h1>
+          <p class="hero__subtitle">Gastronomia elevada por tecnologia, estética neon e experiências imersivas.</p>
+          <div class="hero__cta">
+            <a class="btn btn--neon" href="#menu">Ver Menu</a>
+            <a class="btn btn--ghost" href="#booking">Reservar mesa</a>
+          </div>
+          <div class="hero__trust">
+            <span>★ ★ ★ ★ ★</span>
+            <span>Experiência imersiva</span>
+            <span>Ingredientes orgânicos</span>
+          </div>
+        </div>
+        <div class="floating-icons" aria-hidden="true"></div>
+      </section>
+
+      <section id="menu" class="menu" aria-label="Menu Interativo">
+        <header class="menu__header">
+          <h2 class="section__title">Menu Interativo</h2>
+          <p class="section__subtitle">Explore por categoria, pesquise e abra detalhes dos pratos.</p>
+        </header>
+
+        <div class="menu__controls">
+          <div class="filters" role="tablist" aria-label="Categorias do menu">
+            <button class="filter is-active" data-filter="tudo" role="tab" aria-selected="true">Tudo</button>
+            <button class="filter" data-filter="entradas" role="tab">Entradas</button>
+            <button class="filter" data-filter="pratos" role="tab">Pratos</button>
+            <button class="filter" data-filter="drinks" role="tab">Drinks</button>
+            <button class="filter" data-filter="sobremesas" role="tab">Sobremesas</button>
+            <button class="filter" data-filter="vegan" role="tab">Veganos</button>
+            <button class="filter" data-filter="spicy" role="tab">Apimentados</button>
+          </div>
+          <div class="search">
+            <input id="menuSearch" type="search" placeholder="Buscar por prato, ingrediente..." aria-label="Buscar no menu" />
+          </div>
+        </div>
+
+        <div id="menuGrid" class="menu__grid" aria-live="polite"></div>
+      </section>
+
+      <section id="about" class="about" aria-label="Sobre o NEO Bistrô">
+        <div class="about__content">
+          <h2 class="section__title">Sobre</h2>
+          <p>
+            Unimos ciência e arte culinária para criar pratos que respeitam o planeta
+            e ampliam sentidos. Nossa cozinha usa técnicas de precisão, ingredientes
+            sazonais e um design de experiência pensado para encantar.
+          </p>
+          <ul class="about__highlights">
+            <li>Coquetéis moleculares</li>
+            <li>Menu sazonal e autoral</li>
+            <li>Ambiente imersivo com trilha sonora dinâmica</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="booking" class="booking" aria-label="Reservas">
+        <div class="booking__card">
+          <h2 class="section__title">Reservas</h2>
+          <form id="bookingForm" class="booking__form">
+            <div class="form__row">
+              <label>
+                Data
+                <input type="date" id="bookDate" required />
+              </label>
+              <label>
+                Hora
+                <input type="time" id="bookTime" required />
+              </label>
+              <label>
+                Pessoas
+                <input type="number" id="bookGuests" min="1" max="12" value="2" required />
+              </label>
+            </div>
+            <div class="form__row">
+              <label>
+                Nome
+                <input type="text" id="bookName" placeholder="Seu nome" required />
+              </label>
+              <label>
+                Telefone
+                <input type="tel" id="bookPhone" placeholder="(00) 00000-0000" required />
+              </label>
+            </div>
+            <button class="btn btn--primary" type="submit">Confirmar Reserva</button>
+            <p id="bookingMsg" class="form__msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="contact" class="contact" aria-label="Contato">
+        <div class="contact__info">
+          <h2 class="section__title">Contato</h2>
+          <p>
+            Av. Neon 2049, Setor Holográfico<br />
+            Aberto de Terça a Domingo — 18:00 às 00:00
+          </p>
+          <div class="contact__socials">
+            <a href="#" aria-label="Instagram" class="social social--ig">IG</a>
+            <a href="#" aria-label="TikTok" class="social social--tt">TT</a>
+            <a href="#" aria-label="Maps" class="social social--maps">Maps</a>
+          </div>
+        </div>
+        <div class="contact__map">
+          <iframe
+            title="Mapa do NEO Bistrô"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95565101531825!3d-37.81732397975192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sNEO%20Bistr%C3%B4!5e0!3m2!1spt-BR!2sbr!4v1680000000000"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> NEO Bistrô — Feito com brilho neon.</p>
+    </footer>
+
+    <div id="itemModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+      <div class="modal__overlay" data-close></div>
+      <div class="modal__card" role="document">
+        <button class="modal__close" data-close aria-label="Fechar">×</button>
+        <div class="modal__media">
+          <img id="modalImg" alt="" />
+        </div>
+        <div class="modal__body">
+          <h3 id="modalTitle" class="modal__title"></h3>
+          <p id="modalDesc" class="modal__desc"></p>
+          <div class="modal__meta">
+            <span id="modalPrice" class="price"></span>
+            <div id="modalTags" class="tags"></div>
+          </div>
+          <button id="modalAction" class="btn btn--neon">Quero provar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js" defer></script>
+  </body>
+</html>

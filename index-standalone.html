@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#00f0ff" />
+    <title>NEO Bistrô — Sabores do Amanhã (Standalone)</title>
+    <meta name="description" content="NEO Bistrô: um restaurante futurista com um menu interativo e visual neon cativante." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+    <style>
+:root {
+  --bg: #070a13;
+  --surface: rgba(10, 14, 25, 0.55);
+  --surface-strong: rgba(10, 14, 25, 0.8);
+  --text: #e6f1ff;
+  --muted: #94a3b8;
+  --primary: #00f0ff;
+  --primary-2: #7b61ff;
+  --accent: #ff2bd3;
+  --success: #2dff86;
+  --warning: #ffc700;
+  --danger: #ff4757;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0, 240, 255, 0.12), 0 20px 60px rgba(123, 97, 255, 0.12);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(0, 240, 255, 0.08), transparent 60%),
+              radial-gradient(1200px 600px at 90% 10%, rgba(123, 97, 255, 0.08), transparent 60%),
+              radial-gradient(1000px 600px at 50% 90%, rgba(255, 43, 211, 0.08), transparent 60%),
+              var(--bg);
+  overflow-x: hidden;
+}
+
+#bg-grid { position: fixed; inset: 0; background: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px); background-size: 40px 40px, 40px 40px; pointer-events: none; z-index: 0; }
+#bg-glow { position: fixed; inset: 0; background: radial-gradient(600px 300px at 20% 80%, rgba(0, 240, 255, 0.12), transparent 60%), radial-gradient(600px 300px at 80% 20%, rgba(123, 97, 255, 0.12), transparent 60%); filter: blur(20px); pointer-events: none; z-index: 0; }
+
+.nav { position: sticky; top: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 14px 24px; backdrop-filter: saturate(140%) blur(10px); background: linear-gradient(180deg, rgba(10, 14, 25, 0.8), rgba(10, 14, 25, 0.4)); z-index: 10; border-bottom: 1px solid rgba(123, 97, 255, 0.25); }
+.nav__logo { display: flex; gap: 10px; align-items: center; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; font-weight: 700; }
+.logo__emblem { width: 28px; height: 28px; display: inline-grid; place-items: center; color: var(--primary); border: 1px solid rgba(0, 240, 255, 0.6); border-radius: 50%; text-shadow: 0 0 8px rgba(0, 240, 255, 0.9); }
+.logo__text { font-size: 18px; }
+.nav__links { display: flex; gap: 18px; justify-content: center; }
+.nav__links a { color: var(--text); text-decoration: none; opacity: 0.85; }
+.nav__links a:hover { color: var(--primary); text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); }
+.nav__actions { display: flex; justify-content: flex-end; }
+
+.btn { --pad-x: 18px; --pad-y: 12px; padding: var(--pad-y) var(--pad-x); border-radius: calc(var(--radius) - 6px); border: 1px solid rgba(255,255,255,0.12); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); color: var(--text); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: rgba(0, 240, 255, 0.6); }
+.btn--primary { background: linear-gradient(90deg, rgba(0, 240, 255, 0.25), rgba(123, 97, 255, 0.25)); border-color: rgba(0, 240, 255, 0.6); }
+.btn--neon { background: radial-gradient(120% 120% at 0% 0%, rgba(0, 240, 255, 0.3), transparent 40%), radial-gradient(120% 120% at 100% 0%, rgba(123, 97, 255, 0.3), transparent 40%), rgba(255,255,255,0.03); border-color: rgba(123, 97, 255, 0.7); box-shadow: 0 0 12px 2px rgba(0, 240, 255, 0.4), 0 0 20px 8px rgba(123, 97, 255, 0.25); }
+.btn--ghost { background: transparent; border-color: rgba(255,255,255,0.18); }
+
+.hero { position: relative; padding: 80px 24px 120px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: center; z-index: 1; }
+.hero__content { max-width: 860px; }
+.hero__title { font-family: 'Orbitron', sans-serif; font-size: clamp(36px, 7vw, 90px); line-height: 1.05; margin: 0 0 12px; letter-spacing: 2px; position: relative; color: #dff9ff; text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 24px rgba(123, 97, 255, 0.5); }
+.hero__title::before, .hero__title::after { content: attr(data-glitch); position: absolute; left: 0; top: 0; color: var(--accent); clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%); opacity: 0.35; transform: translate(2px, 0); animation: glitchShift 3s infinite ease-in-out alternate; }
+.hero__title::after { color: var(--primary); clip-path: polygon(0 60%, 100% 45%, 100% 100%, 0 100%); transform: translate(-2px, 0); }
+@keyframes glitchShift { 0% { transform: translate(2px, 0); } 20% { transform: translate(-2px, -1px); } 40% { transform: translate(3px, 1px); } 60% { transform: translate(-1px, -2px); } 80% { transform: translate(1px, 2px); } 100% { transform: translate(0, 0); } }
+.hero__subtitle { margin: 0 0 20px; color: var(--muted); font-size: 18px; }
+.hero__cta { display: flex; gap: 12px; margin: 14px 0 10px; }
+.hero__trust { display: flex; gap: 14px; align-items: center; color: #bcd2ff; opacity: 0.85; }
+
+.floating-icons { position: relative; height: 420px; }
+.floating-icons svg, .floating-icons .icon { position: absolute; opacity: 0.85; filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); animation: floatY var(--dur, 6s) ease-in-out infinite; }
+@keyframes floatY { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-18px) rotate(6deg); } }
+
+.section__title { font-family: 'Orbitron', sans-serif; font-weight: 800; letter-spacing: 1px; font-size: clamp(22px, 3vw, 36px); margin: 0 0 6px; }
+.section__subtitle { margin: 0 0 20px; color: var(--muted); }
+
+.menu { position: relative; z-index: 1; padding: 40px 24px 80px; }
+.menu__controls { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; margin-bottom: 18px; }
+.filters { display: grid; grid-auto-flow: column; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.filter { padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--text); cursor: pointer; }
+.filter:hover { border-color: rgba(0, 240, 255, 0.6); }
+.filter.is-active { background: linear-gradient(90deg, rgba(0, 240, 255, 0.25), rgba(123, 97, 255, 0.25)); border-color: rgba(123, 97, 255, 0.7); }
+.search input { width: 280px; max-width: 60vw; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--text); }
+
+.menu__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card { position: relative; display: grid; grid-template-rows: 160px auto; background: var(--surface); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); overflow: hidden; backdrop-filter: blur(10px) saturate(140%); transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.card:hover { transform: translateY(-4px) scale(1.01); border-color: rgba(0, 240, 255, 0.5); box-shadow: var(--shadow); }
+.card__media { position: relative; }
+.card__media img { width: 100%; height: 100%; object-fit: cover; }
+.card__badge { position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 240, 255, 0.6); color: var(--text); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
+.card__body { display: grid; gap: 10px; padding: 14px; }
+.card__title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card__title h3 { margin: 0; font-size: 18px; }
+.card__like { background: transparent; border: none; color: var(--accent); font-size: 18px; cursor: pointer; opacity: 0.8; }
+.card__desc { color: var(--muted); margin: 0; }
+.card__meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.price { font-family: 'Orbitron', sans-serif; color: var(--primary); }
+.tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+
+.about { padding: 40px 24px; }
+.about__content { max-width: 900px; }
+.about__highlights { display: flex; gap: 16px; padding: 0; margin: 16px 0 0; list-style: none; }
+.about__highlights li { background: rgba(255,255,255,0.04); padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); }
+
+.booking { padding: 40px 24px 80px; }
+.booking__card { max-width: 980px; margin: 0 auto; background: var(--surface-strong); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+.booking__form { display: grid; gap: 12px; }
+.form__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+label { display: grid; gap: 6px; font-size: 14px; color: var(--muted); }
+input { padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--text); }
+.form__msg { margin: 8px 0 0; color: var(--success); min-height: 20px; }
+
+.contact { padding: 40px 24px 80px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; }
+.contact__info { background: var(--surface); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 16px; }
+.contact__socials { display: flex; gap: 10px; margin-top: 8px; }
+.social { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; text-decoration: none; color: var(--text); background: rgba(255,255,255,0.05); }
+.contact__map iframe { width: 100%; height: 280px; border: none; border-radius: var(--radius); }
+
+.footer { padding: 20px 24px; color: var(--muted); text-align: center; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(10, 14, 25, 0.4); }
+
+.modal { position: fixed; inset: 0; display: none; z-index: 20; }
+.modal.is-open { display: grid; place-items: center; }
+.modal__overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
+.modal__card { position: relative; width: min(900px, 92vw); display: grid; grid-template-columns: 1fr 1.1fr; gap: 0; background: var(--surface-strong); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.modal__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.modal__body { padding: 16px; display: grid; gap: 12px; }
+.modal__title { margin: 0; font-size: 22px; }
+.modal__desc { margin: 0; color: var(--muted); }
+.modal__close { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); color: var(--text); border-radius: 999px; width: 36px; height: 36px; cursor: pointer; }
+
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; }
+  .contact { grid-template-columns: 1fr; }
+  .modal__card { grid-template-columns: 1fr; }
+}
+    </style>
+  </head>
+  <body>
+    <div id="bg-grid"></div>
+    <div id="bg-glow"></div>
+
+    <header class="nav">
+      <div class="nav__logo" aria-label="NEO Bistrô">
+        <span class="logo__emblem">◎</span>
+        <span class="logo__text">NEO Bistrô</span>
+      </div>
+      <nav class="nav__links" aria-label="Navegação principal">
+        <a href="#menu">Menu</a>
+        <a href="#about">Sobre</a>
+        <a href="#booking">Reservas</a>
+        <a href="#contact">Contato</a>
+      </nav>
+      <div class="nav__actions">
+        <button id="reserveTop" class="btn btn--primary">Reservar</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="hero" class="hero" aria-label="Destaque">
+        <div class="hero__content">
+          <h1 class="hero__title" data-glitch="Sabores do Amanhã">Sabores do Amanhã</h1>
+          <p class="hero__subtitle">Gastronomia elevada por tecnologia, estética neon e experiências imersivas.</p>
+          <div class="hero__cta">
+            <a class="btn btn--neon" href="#menu">Ver Menu</a>
+            <a class="btn btn--ghost" href="#booking">Reservar mesa</a>
+          </div>
+          <div class="hero__trust">
+            <span>★ ★ ★ ★ ★</span>
+            <span>Experiência imersiva</span>
+            <span>Ingredientes orgânicos</span>
+          </div>
+        </div>
+        <div class="floating-icons" aria-hidden="true"></div>
+      </section>
+
+      <section id="menu" class="menu" aria-label="Menu Interativo">
+        <header class="menu__header">
+          <h2 class="section__title">Menu Interativo</h2>
+          <p class="section__subtitle">Explore por categoria, pesquise e abra detalhes dos pratos.</p>
+        </header>
+
+        <div class="menu__controls">
+          <div class="filters" role="tablist" aria-label="Categorias do menu">
+            <button class="filter is-active" data-filter="tudo" role="tab" aria-selected="true">Tudo</button>
+            <button class="filter" data-filter="entradas" role="tab">Entradas</button>
+            <button class="filter" data-filter="pratos" role="tab">Pratos</button>
+            <button class="filter" data-filter="drinks" role="tab">Drinks</button>
+            <button class="filter" data-filter="sobremesas" role="tab">Sobremesas</button>
+            <button class="filter" data-filter="vegan" role="tab">Veganos</button>
+            <button class="filter" data-filter="spicy" role="tab">Apimentados</button>
+          </div>
+          <div class="search">
+            <input id="menuSearch" type="search" placeholder="Buscar por prato, ingrediente..." aria-label="Buscar no menu" />
+          </div>
+        </div>
+
+        <div id="menuGrid" class="menu__grid" aria-live="polite"></div>
+      </section>
+
+      <section id="about" class="about" aria-label="Sobre o NEO Bistrô">
+        <div class="about__content">
+          <h2 class="section__title">Sobre</h2>
+          <p>
+            Unimos ciência e arte culinária para criar pratos que respeitam o planeta
+            e ampliam sentidos. Nossa cozinha usa técnicas de precisão, ingredientes
+            sazonais e um design de experiência pensado para encantar.
+          </p>
+          <ul class="about__highlights">
+            <li>Coquetéis moleculares</li>
+            <li>Menu sazonal e autoral</li>
+            <li>Ambiente imersivo com trilha sonora dinâmica</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="booking" class="booking" aria-label="Reservas">
+        <div class="booking__card">
+          <h2 class="section__title">Reservas</h2>
+          <form id="bookingForm" class="booking__form">
+            <div class="form__row">
+              <label>
+                Data
+                <input type="date" id="bookDate" required />
+              </label>
+              <label>
+                Hora
+                <input type="time" id="bookTime" required />
+              </label>
+              <label>
+                Pessoas
+                <input type="number" id="bookGuests" min="1" max="12" value="2" required />
+              </label>
+            </div>
+            <div class="form__row">
+              <label>
+                Nome
+                <input type="text" id="bookName" placeholder="Seu nome" required />
+              </label>
+              <label>
+                Telefone
+                <input type="tel" id="bookPhone" placeholder="(00) 00000-0000" required />
+              </label>
+            </div>
+            <button class="btn btn--primary" type="submit">Confirmar Reserva</button>
+            <p id="bookingMsg" class="form__msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="contact" class="contact" aria-label="Contato">
+        <div class="contact__info">
+          <h2 class="section__title">Contato</h2>
+          <p>
+            Av. Neon 2049, Setor Holográfico<br />
+            Aberto de Terça a Domingo — 18:00 às 00:00
+          </p>
+          <div class="contact__socials">
+            <a href="#" aria-label="Instagram" class="social social--ig">IG</a>
+            <a href="#" aria-label="TikTok" class="social social--tt">TT</a>
+            <a href="#" aria-label="Maps" class="social social--maps">Maps</a>
+          </div>
+        </div>
+        <div class="contact__map">
+          <iframe
+            title="Mapa do NEO Bistrô"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95565101531825!3d-37.81732397975192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sNEO%20Bistr%C3%B4!5e0!3m2!1spt-BR!2sbr!4v1680000000000"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> NEO Bistrô — Feito com brilho neon.</p>
+    </footer>
+
+    <div id="itemModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+      <div class="modal__overlay" data-close></div>
+      <div class="modal__card" role="document">
+        <button class="modal__close" data-close aria-label="Fechar">×</button>
+        <div class="modal__media">
+          <img id="modalImg" alt="" />
+        </div>
+        <div class="modal__body">
+          <h3 id="modalTitle" class="modal__title"></h3>
+          <p id="modalDesc" class="modal__desc"></p>
+          <div class="modal__meta">
+            <span id="modalPrice" class="price"></span>
+            <div id="modalTags" class="tags"></div>
+          </div>
+          <button id="modalAction" class="btn btn--neon">Quero provar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+const $ = (s, ctx = document) => ctx.querySelector(s);
+const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
+
+const MENU_ITEMS = [
+  { id: 'neo-edamame', name: 'Edamame Neon', desc: 'Vagem de soja com sal cibernético e óleo de gergelim ionizado.', price: 28.9, category: 'entradas', img: 'https://images.unsplash.com/photo-1558036117-15d82a90b9b0?q=80&w=1200&auto=format&fit=crop', tags: ['vegan'] },
+  { id: 'holo-taco', name: 'Taco Holográfico', desc: 'Tortilha azul, peixe em tempura, maionese de yuzu e pó cintilante comestível.', price: 42.5, category: 'entradas', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200&auto=format&fit=crop', tags: ['spicy'] },
+  { id: 'fusion-ramen', name: 'Ramen de Fusão Quântica', desc: 'Caldo dashi, spaghetti de algas, porco chashu e nitro-cebolinha.', price: 62.9, category: 'pratos', img: 'https://images.unsplash.com/photo-1604908554007-06258b35682c?q=80&w=1200&auto=format&fit=crop', tags: ['spicy'] },
+  { id: 'plasma-risotto', name: 'Risotto de Plasma', desc: 'Arborio com caldo de cogumelos, queijo vegano trufado e pó de beterraba.', price: 58.0, category: 'pratos', img: 'https://images.unsplash.com/photo-1543332164-6e82f355badc?q=80&w=1200&auto=format&fit=crop', tags: ['vegan'] },
+  { id: 'ion-burger', name: 'Ion Burger', desc: 'Blend bovino, cheddar reativo, cebola caramelizada e molho elétrico.', price: 54.9, category: 'pratos', img: 'https://images.unsplash.com/photo-1550317138-10000687a72b?q=80&w=1200&auto=format&fit=crop', tags: [] },
+  { id: 'cosmo-sushi', name: 'Cosmo Sushi', desc: 'Combo de nigiris com esfera de ponzu e poeira cítrica.', price: 74.0, category: 'pratos', img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=1200&auto=format&fit=crop', tags: ['vegan'] },
+  { id: 'nebulous-gin', name: 'Gin Nebuloso', desc: 'Gin, água tônica artesanal, gelo seco e tintura de lavanda.', price: 34.0, category: 'drinks', img: 'https://images.unsplash.com/photo-1566417713940-fe7c737a9ef1?q=80&w=1200&auto=format&fit=crop', tags: [] },
+  { id: 'quantum-cola', name: 'Cola Quântica', desc: 'Releitura artesanal com especiarias e borbulhas persistentes.', price: 18.0, category: 'drinks', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=1200&auto=format&fit=crop', tags: ['vegan'] },
+  { id: 'stellar-tiramisu', name: 'Tiramisù Estelar', desc: 'Camadas aveludadas com névoa de café e mascarpone leve.', price: 32.0, category: 'sobremesas', img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1200&auto=format&fit=crop', tags: [] },
+  { id: 'plasma-cheesecake', name: 'Cheesecake de Plasma', desc: 'Base crocante, creme suave e coulis neon de frutas vermelhas.', price: 31.5, category: 'sobremesas', img: 'https://images.unsplash.com/photo-1599785209796-df02c2c5b9e1?q=80&w=1200&auto=format&fit=crop', tags: ['vegan'] },
+  { id: 'molecular-sphere', name: 'Esfera Molecular', desc: 'Explosão de sabores cítricos encapsulados em alginato.', price: 26.0, category: 'entradas', img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981d?q=80&w=1200&auto=format&fit=crop', tags: [] },
+  { id: 'nova-kombucha', name: 'Kombucha Nova', desc: 'Fermentado de hibisco e framboesa, refrescância cósmica.', price: 19.5, category: 'drinks', img: 'https://images.unsplash.com/photo-1559718062-361155fad299?q=80&w=1200&auto=format&fit=crop', tags: ['vegan'] }
+];
+
+const STATE = { filter: 'tudo', search: '', favorites: new Set(JSON.parse(localStorage.getItem('neo.favs') || '[]')) };
+function saveFavs() { localStorage.setItem('neo.favs', JSON.stringify(Array.from(STATE.favorites))); }
+function formatPrice(n) { return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function createTag(label) { const span = document.createElement('span'); span.className = 'tag'; span.textContent = label; return span; }
+
+function cardTemplate(item) {
+  const isFav = STATE.favorites.has(item.id);
+  const el = document.createElement('article');
+  el.className = 'card reveal';
+  el.setAttribute('data-id', item.id);
+  el.innerHTML = `
+    <div class="card__media">
+      <img src="${item.img}" alt="${item.name}" loading="lazy"/>
+      <span class="card__badge">${item.category}</span>
+    </div>
+    <div class="card__body">
+      <div class="card__title">
+        <h3>${item.name}</h3>
+        <button class="card__like" aria-label="Favoritar">${isFav ? '❤' : '♡'}</button>
+      </div>
+      <p class="card__desc">${item.desc}</p>
+      <div class="card__meta">
+        <span class="price">${formatPrice(item.price)}</span>
+        <div class="tags"></div>
+      </div>
+      <button class="btn btn--neon open-modal">Detalhes</button>
+    </div>
+  `;
+  const tagsWrap = $('.tags', el);
+  item.tags.forEach(t => tagsWrap.appendChild(createTag(t)));
+  return el;
+}
+
+function renderMenu() {
+  const grid = $('#menuGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const matchesFilter = (i) => STATE.filter === 'tudo' || i.category === STATE.filter || i.tags.includes(STATE.filter);
+  const matchesSearch = (i) => i.name.toLowerCase().includes(STATE.search) || i.desc.toLowerCase().includes(STATE.search);
+  const items = MENU_ITEMS.filter(i => matchesFilter(i) && matchesSearch(i));
+  if (items.length === 0) { grid.innerHTML = '<p class="section__subtitle">Nenhum item encontrado. Experimente outra busca ou categoria.</p>'; return; }
+  const frag = document.createDocumentFragment();
+  items.forEach(item => frag.appendChild(cardTemplate(item)));
+  grid.appendChild(frag);
+}
+
+function setActiveFilter(btn) { $$('.filter').forEach(b => b.classList.remove('is-active')); btn.classList.add('is-active'); }
+function setupFilters() { $$('.filter').forEach(btn => { btn.addEventListener('click', () => { STATE.filter = btn.dataset.filter; setActiveFilter(btn); renderMenu(); }); }); }
+function debounce(fn, ms = 200) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
+function setupSearch() { const input = $('#menuSearch'); if (!input) return; input.addEventListener('input', debounce(() => { STATE.search = input.value.trim().toLowerCase(); renderMenu(); }, 250)); }
+
+function setupCardInteractions() {
+  const grid = $('#menuGrid'); if (!grid) return;
+  grid.addEventListener('click', (e) => {
+    const likeBtn = e.target.closest('.card__like');
+    const openBtn = e.target.closest('.open-modal');
+    const card = e.target.closest('.card');
+    if (!card) return;
+    const id = card.getAttribute('data-id');
+    if (likeBtn) { if (STATE.favorites.has(id)) STATE.favorites.delete(id); else STATE.favorites.add(id); saveFavs(); renderMenu(); return; }
+    if (openBtn) { openModal(id); return; }
+  });
+  grid.addEventListener('mousemove', (e) => { const card = e.target.closest('.card'); if (!card) return; const r = card.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width - 0.5; const y = (e.clientY - r.top)/r.height - 0.5; card.style.transform = `rotateY(${x*5}deg) rotateX(${y*-5}deg) translateY(-4px)`; });
+  grid.addEventListener('mouseleave', () => { $$('.card').forEach(c => c.style.transform = ''); });
+}
+
+function openModal(id) {
+  const item = MENU_ITEMS.find(i => i.id === id); if (!item) return;
+  const modal = $('#itemModal');
+  $('#modalImg').src = item.img; $('#modalImg').alt = item.name;
+  $('#modalTitle').textContent = item.name; $('#modalDesc').textContent = item.desc;
+  $('#modalPrice').textContent = formatPrice(item.price);
+  const tags = $('#modalTags'); tags.innerHTML = ''; item.tags.forEach(t => tags.appendChild(createTag(t)));
+  $('#modalAction').onclick = () => { alert('Pedido registrado! Nossa equipe vai confirmar com você.'); };
+  modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false');
+}
+function closeModal() { const modal = $('#itemModal'); modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); }
+function setupModal() { const modal = $('#itemModal'); modal.addEventListener('click', (e) => { if (e.target.hasAttribute('data-close')) closeModal(); }); $('.modal__close').addEventListener('click', closeModal); window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); }); }
+
+function setupBooking() {
+  const form = $('#bookingForm'); if (!form) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('#bookName').value.trim();
+    const date = $('#bookDate').value;
+    const time = $('#bookTime').value;
+    const guests = $('#bookGuests').value;
+    const msg = $('#bookingMsg');
+    if (!name || !date || !time) { msg.style.color = 'var(--danger)'; msg.textContent = 'Por favor, preencha todos os campos.'; return; }
+    msg.style.color = 'var(--success)';
+    msg.textContent = `Reserva solicitada para ${guests} pessoa(s) em ${new Date(date).toLocaleDateString('pt-BR')} às ${time}, ${name}. Entraremos em contato!`;
+    form.reset();
+  });
+  $('#reserveTop').addEventListener('click', () => { window.location.hash = '#booking'; });
+}
+
+function createIcon(svg, left, top, size = 38, dur = 6) { const wrap = document.createElement('div'); wrap.className = 'icon'; wrap.style.left = left; wrap.style.top = top; wrap.style.setProperty('--dur', `${dur}s`); wrap.innerHTML = svg; wrap.firstElementChild.setAttribute('width', size); wrap.firstElementChild.setAttribute('height', size); return wrap; }
+const SVGS = { star: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="#00F0FF" d="M12 2l2.9 6.3 6.8.5-5.1 4.4 1.6 6.6L12 16.7 5.8 19.8l1.6-6.6L2.4 8.8l6.8-.5L12 2z"/></svg>', rocket: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#7B61FF" d="M12 2c4 0 6 2 6 6 0 3-2 7-6 11-4-4-6-8-6-11 0-4 2-6 6-6zm0 3a2 2 0 100 4 2 2 0 000-4z"/><path fill="#FF2BD3" d="M5 15c-1 0-3 2-3 3 0 1 2 2 3 2s3-1 3-2-2-3-3-3z"/></svg>', leaf: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#2DFF86" d="M3 12c6-8 18-9 18-9s-1 12-9 18C6 15 3 12 3 12z"/></svg>', flame: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#FFC700" d="M12 2s4 4 3 8-5 5-3 9c-5-2-8-6-5-11 2-4 5-6 5-6z"/></svg>', chef: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="7" r="4" fill="#FFF" opacity=".85"/><rect x="9" y="11" width="6" height="9" rx="2" fill="#00F0FF"/></svg>', bubble: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="4" fill="#00F0FF" opacity=".35"/><circle cx="14" cy="10" r="3" fill="#7B61FF" opacity=".35"/><circle cx="18" cy="5" r="2" fill="#FF2BD3" opacity=".35"/></svg>' };
+function setupFloatingIcons() {
+  const layer = $('.floating-icons'); if (!layer) return;
+  const icons = [
+    createIcon(SVGS.star, '8%', '24%', 40, 7),
+    createIcon(SVGS.rocket, '22%', '6%', 46, 8),
+    createIcon(SVGS.leaf, '38%', '36%', 34, 6),
+    createIcon(SVGS.flame, '58%', '12%', 34, 7),
+    createIcon(SVGS.chef, '74%', '30%', 48, 9),
+    createIcon(SVGS.bubble, '86%', '14%', 52, 8),
+    createIcon(SVGS.star, '12%', '60%', 28, 7),
+    createIcon(SVGS.leaf, '66%', '62%', 26, 6)
+  ];
+  icons.forEach(i => layer.appendChild(i));
+}
+
+function observeReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.animation = 'reveal .6s ease both'; obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  $$('.reveal').forEach(el => obs.observe(el));
+}
+
+const style = document.createElement('style'); style.innerHTML = `@keyframes reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }`; document.head.appendChild(style);
+function initYear() { $('#year').textContent = new Date().getFullYear(); }
+function boot() { setupFloatingIcons(); setupFilters(); setupSearch(); setupCardInteractions(); setupModal(); setupBooking(); renderMenu(); observeReveal(); initYear(); }
+document.addEventListener('DOMContentLoaded', boot);
+    </script>
+  </body>
+</html>
